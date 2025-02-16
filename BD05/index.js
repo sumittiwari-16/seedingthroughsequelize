@@ -234,6 +234,6 @@ app.post("/tracks/new", async (req, res) => {
   }
 });
 
-app.listen(3000, '0.0.0.0',() => {
+app.listen(3000,() => {
   console.log(`server is running on port ${port}`);
 });
