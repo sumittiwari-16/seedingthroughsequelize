@@ -181,6 +181,44 @@ app.get('/seed_db', async (req, res) => {
   }
 });
 
+async function fetchAllTracks(){
+  let tracks = await track.findAll();
+  return {tracks};
+}
+
+app.get('/tracks',async(req,res)=>{
+  try{
+    let response = await fetchAllTracks();
+    if(response.tracks.length === 0){
+      res.status(404).json("No track found");
+    }
+    res.status(200).json(response);
+
+  }catch (error) {
+    res
+      .status(500)
+      .json({ message: 'Error sending data', error: error.message });
+  }
+})
+
+async function fetchMovieByRating(order){
+  let result = await track.findAll({order: [["rating",order]]});
+  return {tracks: result};
+}
+
+app.get('/sort/byrating', async (req, res) => {
+  try {
+    let order = req.query.order;
+    let response = await fetchMovieByRating(order);
+    if (response.tracks.length === 0) {
+      res.status(200).json('No movie found for this rating');
+    }
+    res.status(200).json(response);
+  }catch(error){
+    res.status(500).json({ message: 'error occurred', error: error.message });
+  }
+})
+
 app.listen(3000, () => {
   console.log(`server is running on port ${port}`);
 });
