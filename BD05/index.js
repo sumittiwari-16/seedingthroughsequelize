@@ -219,6 +219,21 @@ app.get('/sort/byrating', async (req, res) => {
   }
 })
 
-app.listen(3000, () => {
+async function addNewMovie(newMovie1) {
+  let newMovie = await track.create(newMovie1);
+  return newMovie;
+}
+
+app.post("/tracks/new", async (req, res) => {
+  try {
+    let newMovie = req.body.newMovie;
+    let response = await addNewMovie(newMovie);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ message: "Error occurred", error: error.message });
+  }
+});
+
+app.listen(3000, '0.0.0.0',() => {
   console.log(`server is running on port ${port}`);
 });
