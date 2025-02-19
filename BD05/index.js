@@ -234,6 +234,30 @@ app.post("/tracks/new", async (req, res) => {
   }
 });
 
+async function updatedMovie(id, updateNewMovie) {
+  let updateDetails = await track.findOne({ where: { id } });
+  if (!updateDetails) {
+    return {};
+  }
+  updateDetails.set(updateNewMovie);
+  let newOne = await updateDetails.save();
+  return { message: "Movie updated successfully", newOne };
+}
+
+app.post("/tracks/update/:id", async (req, res) => {
+  try {
+    let id = parseInt(req.params.id);
+    let updateNewMovie = req.body;
+    let response = await updatedMovie(id, updateNewMovie);
+    if (!response.message) {
+      res.status(404).json("No movie found");
+    }
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ message: "Error occurred", error: error.message });
+  }
+});
+
 app.listen(3000,() => {
   console.log(`server is running on port ${port}`);
 });
