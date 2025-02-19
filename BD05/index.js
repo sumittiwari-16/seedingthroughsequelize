@@ -258,6 +258,27 @@ app.post("/tracks/update/:id", async (req, res) => {
   }
 });
 
+async function deleteItem(id) {
+  let deletedRecord = await track.destroy({ where: { id } });
+  if (deletedRecord === 0) {
+    return {};
+  }
+  return { message: "Movie deleted successfully" };
+}
+
+app.post("/tracks/delete/:id", async (req, res) => {
+  try {
+    let id = parseInt(req.params.id);
+    let response = await deleteItem(id);
+    if (!response.message) {
+      res.status(404).json("No movie found");
+    }
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ message: "Error occurred", error: error.message });
+  }
+});
+
 app.listen(3000,() => {
   console.log(`server is running on port ${port}`);
 });
